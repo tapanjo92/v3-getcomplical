@@ -18,7 +18,7 @@ API Gateway → Kinesis Data Firehose → S3 (Raw Logs)
      ↓              ↓
   Lambda         Kinesis Analytics → ElastiCache Redis
      ↓              ↓
-  DynamoDB      TimeStream → QuickSight Dashboard
+  DynamoDB      TimeStream → Custom React Dashboard
 ```
 
 ## Component Details
@@ -231,45 +231,282 @@ def get_realtime_usage(customer_id):
     }
 ```
 
-### 6. Dashboard Implementation
+### 6. Customer Dashboard Implementation
 
-#### Frontend Architecture
-```javascript
-// React component with WebSocket for real-time updates
-const UsageDashboard = () => {
-  const [usage, setUsage] = useState({});
-  const [lastUpdate, setLastUpdate] = useState(null);
+#### Recommended Approach: Custom API + React Dashboard
+```yaml
+Benefits:
+  - Cost: ~$50/month vs $18/user (QuickSight)
+  - Full control over UX
+  - Sub-second performance with caching
+  - Real-time updates via polling/WebSocket
+  - White-label ready
+  - No vendor lock-in
+```
+
+#### Architecture Options
+
+##### Option 1: Custom Dashboard (Recommended)
+**Tech Stack**: React + Recharts + API Gateway + Lambda
+
+```typescript
+// Frontend: React + Recharts Implementation
+import { LineChart, Line, BarChart, Bar, PieChart, Pie } from 'recharts';
+import { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
+
+const UsageDashboard = ({ customerId, apiKeys }) => {
+  const [timeRange, setTimeRange] = useState('24h');
   
-  useEffect(() => {
-    // Initial load
-    fetchUsage();
-    
-    // WebSocket for real-time updates
-    const ws = new WebSocket('wss://api.example.com/usage-stream');
-    ws.onmessage = (event) => {
-      const update = JSON.parse(event.data);
-      if (update.customerId === currentCustomer) {
-        setUsage(prev => ({
-          ...prev,
-          total: prev.total + update.increment,
-          byKey: {
-            ...prev.byKey,
-            [update.apiKeyId]: (prev.byKey[update.apiKeyId] || 0) + update.increment
-          }
-        }));
-        setLastUpdate(new Date());
+  // React Query for intelligent caching
+  const { data: usage, isLoading, error } = useQuery(
+    ['usage', customerId, timeRange],
+    () => fetchUsage(customerId, timeRange),
+    {
+      refetchInterval: 15000, // 15-second polling
+      staleTime: 10000, // Consider data stale after 10s
+      cacheTime: 300000, // Keep in cache for 5 minutes
+    }
+  );
+
+  const fetchUsage = async (customerId, range) => {
+    const response = await fetch(`/api/v1/usage?range=${range}`, {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'X-Customer-Id': customerId
       }
-    };
+    });
     
-    // Polling fallback every 15 seconds
-    const interval = setInterval(fetchUsage, 15000);
-    
-    return () => {
-      ws.close();
-      clearInterval(interval);
-    };
-  }, []);
+    if (!response.ok) throw new Error('Failed to fetch usage');
+    return response.json();
+  };
+
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorDisplay error={error} />;
+
+  return (
+    <div className="usage-dashboard">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <SummaryCard 
+          title="Total Requests" 
+          value={usage.total.toLocaleString()}
+          change={usage.changePercent}
+        />
+        <SummaryCard 
+          title="Error Rate" 
+          value={`${usage.errorRate.toFixed(2)}%`}
+          status={usage.errorRate > 1 ? 'warning' : 'success'}
+        />
+        <SummaryCard 
+          title="Avg Latency" 
+          value={`${usage.avgLatency}ms`}
+          target="<100ms"
+        />
+        <SummaryCard 
+          title="Active Keys" 
+          value={`${usage.activeKeys}/${apiKeys.length}`}
+        />
+      </div>
+
+      {/* Time Series Chart */}
+      <div className="bg-white p-6 rounded-lg shadow mb-6">
+        <h3 className="text-lg font-semibold mb-4">Usage Over Time</h3>
+        <LineChart width={800} height={300} data={usage.timeline}>
+          <Line 
+            type="monotone" 
+            dataKey="requests" 
+            stroke="#3B82F6" 
+            strokeWidth={2}
+            dot={false}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="errors" 
+            stroke="#EF4444" 
+            strokeWidth={2}
+            dot={false}
+          />
+        </LineChart>
+      </div>
+
+      {/* API Key Breakdown */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-lg font-semibold mb-4">Usage by API Key</h3>
+        <BarChart width={800} height={300} data={usage.byKey}>
+          <Bar dataKey="count" fill="#10B981" />
+        </BarChart>
+      </div>
+    </div>
+  );
 };
+```
+
+##### Option 2: Embedded Analytics with Cube.js
+**When to use**: Need advanced analytics features quickly
+
+```javascript
+// Cube.js Schema Definition
+cube(`Usage`, {
+  sql: `
+    SELECT 
+      customer_id,
+      api_key_id,
+      DATE_TRUNC('hour', timestamp) as hour,
+      COUNT(*) as requests,
+      COUNT(CASE WHEN status_code >= 400 THEN 1 END) as errors,
+      AVG(latency) as avg_latency
+    FROM usage_events
+    WHERE timestamp > NOW() - INTERVAL '30 days'
+    GROUP BY 1, 2, 3
+  `,
+  
+  measures: {
+    totalRequests: {
+      type: `count`,
+      drillMembers: [customerId, apiKeyId, hour]
+    },
+    errorRate: {
+      sql: `100.0 * ${errors} / NULLIF(${totalRequests}, 0)`,
+      type: `number`,
+      format: `percent`
+    },
+    avgLatency: {
+      sql: `avg_latency`,
+      type: `avg`,
+      format: `number`
+    }
+  },
+  
+  dimensions: {
+    customerId: {
+      sql: `customer_id`,
+      type: `string`
+    },
+    apiKeyId: {
+      sql: `api_key_id`,
+      type: `string`
+    },
+    hour: {
+      sql: `hour`,
+      type: `time`
+    }
+  },
+  
+  preAggregations: {
+    hourlyRollup: {
+      measures: [totalRequests, errorRate, avgLatency],
+      dimensions: [customerId, apiKeyId],
+      timeDimension: hour,
+      granularity: `hour`,
+      refreshKey: {
+        every: `5 minutes`
+      }
+    }
+  }
+});
+```
+
+#### Backend API Implementation
+```python
+# Lambda function for usage API endpoint
+import json
+from datetime import datetime, timedelta
+import boto3
+from aws_lambda_powertools import Logger, Metrics, Tracer
+
+logger = Logger()
+tracer = Tracer()
+metrics = Metrics()
+
+@tracer.capture_lambda_handler
+def get_usage_handler(event, context):
+    """API endpoint for customer usage data"""
+    
+    # Extract customer context from authorizer
+    customer_id = event['requestContext']['authorizer']['customerId']
+    time_range = event['queryStringParameters'].get('range', '24h')
+    
+    # Check cache first
+    cache_key = f"dashboard:{customer_id}:{time_range}"
+    cached = redis_client.get(cache_key)
+    if cached:
+        return success_response(json.loads(cached), cached=True)
+    
+    # Build aggregated response
+    usage_data = {
+        'total': 0,
+        'errorRate': 0,
+        'avgLatency': 0,
+        'activeKeys': 0,
+        'changePercent': 0,
+        'timeline': [],
+        'byKey': []
+    }
+    
+    # Query based on time range
+    if time_range == '24h':
+        usage_data = get_realtime_usage(customer_id)
+    elif time_range == '7d':
+        usage_data = get_weekly_usage(customer_id)
+    elif time_range == '30d':
+        usage_data = get_monthly_usage(customer_id)
+    
+    # Cache for 1 minute
+    redis_client.setex(cache_key, 60, json.dumps(usage_data))
+    
+    return success_response(usage_data)
+
+def get_realtime_usage(customer_id):
+    """Get usage from Redis for last 24 hours"""
+    pattern = f"usage:{customer_id}:*"
+    
+    # Aggregate from Redis
+    total = 0
+    errors = 0
+    latencies = []
+    by_key = {}
+    timeline = []
+    
+    for key in redis_client.scan_iter(match=pattern):
+        hour_data = redis_client.hgetall(key)
+        for api_key_id, stats in hour_data.items():
+            stats_dict = json.loads(stats)
+            total += stats_dict['count']
+            errors += stats_dict['errors']
+            latencies.extend(stats_dict['latencies'])
+            by_key[api_key_id] = by_key.get(api_key_id, 0) + stats_dict['count']
+    
+    # Calculate aggregates
+    error_rate = (errors / total * 100) if total > 0 else 0
+    avg_latency = sum(latencies) / len(latencies) if latencies else 0
+    
+    return {
+        'total': total,
+        'errorRate': round(error_rate, 2),
+        'avgLatency': round(avg_latency),
+        'activeKeys': len(by_key),
+        'changePercent': calculate_change_percent(customer_id),
+        'timeline': format_timeline_data(timeline),
+        'byKey': format_key_breakdown(by_key),
+        'lastUpdated': datetime.now().isoformat()
+    }
+
+def success_response(data, cached=False):
+    """Generate API response with caching headers"""
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'private, max-age=60',
+            'X-Cache': 'HIT' if cached else 'MISS',
+            'Access-Control-Allow-Origin': '*'
+        },
+        'body': json.dumps({
+            'status': 'success',
+            'data': data
+        })
+    }
 ```
 
 ## Latency Breakdown
@@ -332,6 +569,21 @@ Total: ~$635/month
 2. **Compression**: Use protobuf instead of JSON
 3. **Reserved Capacity**: 40% savings on Redis
 4. **S3 Lifecycle**: Move to Glacier after 30 days
+
+### Dashboard Cost Comparison
+```yaml
+Custom React Dashboard:
+  - Infrastructure: $50/month (included in analytics cost)
+  - No per-user charges
+  - Unlimited customers
+  
+QuickSight Alternative:
+  - $18/user/month
+  - 1000 customers = $18,000/month
+  - Limited customization
+  
+Savings: 99.7% cost reduction
+```
 
 ## Implementation Phases
 
