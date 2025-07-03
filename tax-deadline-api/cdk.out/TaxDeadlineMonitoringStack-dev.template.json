@@ -1,0 +1,87 @@
+{
+ "Description": "Tax Deadline API - Monitoring",
+ "Resources": {
+  "AlarmTopicD01E77F9": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Tax Deadline API Alarms",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "TopicName": "tax-deadline-alarms-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineMonitoringStack-dev/AlarmTopic/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/yXGSw5AMBAA0LPYt6NqZe0AEuylqpLxacW0LKR3l7J6T0IhBIhM3cT1tPINR3g6r/TK1E0DWYKndwdqVs/2S0xrgj+CT2sNuXBqE5l1k4GF8ksKKCoos4UQ+Rmsx91A+/sCNbu9znAAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineMonitoringStack-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AlarmTopicArn": {
+   "Description": "SNS Topic for CloudWatch Alarms",
+   "Value": {
+    "Ref": "AlarmTopicD01E77F9"
+   },
+   "Export": {
+    "Name": "dev-AlarmTopicArn"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

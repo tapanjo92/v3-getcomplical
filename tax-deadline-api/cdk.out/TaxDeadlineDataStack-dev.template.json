@@ -1,0 +1,284 @@
+{
+ "Description": "Tax Deadline API - Data Layer",
+ "Resources": {
+  "DeadlinesTable68314219": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI1PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI1SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI2PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI2SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "TaxDeadlines-dev",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineDataStack-dev/DeadlinesTable/Resource"
+   }
+  },
+  "ApiKeysTable9F4DC7E7": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "apiKeyHash",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "KeyLookupIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "apiKeyHash",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "TaxDeadlineApiKeys-dev",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineDataStack-dev/ApiKeysTable/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zXIyw5FMBRA0W8xb49iZOwDJJjfnD4k9WjFaa+I+HdBjPbKziETAkSCG3GlRz5ZCUcbUI0MN/rp3eHstYSjQzkZVvXuwckaQz6u6ll1DEsMt757Mue1gYHSfy4gK6FIBrKWr9EFOxto3l6OpNFxfgAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineDataStack-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DeadlinesTableName": {
+   "Value": {
+    "Ref": "DeadlinesTable68314219"
+   },
+   "Export": {
+    "Name": "dev-DeadlinesTableName"
+   }
+  },
+  "ApiKeysTableName": {
+   "Value": {
+    "Ref": "ApiKeysTable9F4DC7E7"
+   },
+   "Export": {
+    "Name": "dev-ApiKeysTableName"
+   }
+  },
+  "ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiKeysTable9F4DC7E7",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+   }
+  },
+  "ExportsOutputRefApiKeysTable9F4DC7E79648F444": {
+   "Value": {
+    "Ref": "ApiKeysTable9F4DC7E7"
+   },
+   "Export": {
+    "Name": "TaxDeadlineDataStack-dev:ExportsOutputRefApiKeysTable9F4DC7E79648F444"
+   }
+  },
+  "ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DeadlinesTable68314219",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+   }
+  },
+  "ExportsOutputRefDeadlinesTable68314219B44DFEDC": {
+   "Value": {
+    "Ref": "DeadlinesTable68314219"
+   },
+   "Export": {
+    "Name": "TaxDeadlineDataStack-dev:ExportsOutputRefDeadlinesTable68314219B44DFEDC"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "11efb7035bec157f2ae28f46e8f72d6214f55e37d51cce016c5db6ef7c005eda": {
+      "source": {
+        "path": "asset.11efb7035bec157f2ae28f46e8f72d6214f55e37d51cce016c5db6ef7c005eda",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "809555764832-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+          "objectKey": "11efb7035bec157f2ae28f46e8f72d6214f55e37d51cce016c5db6ef7c005eda.zip",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-file-publishing-role-809555764832-ap-south-1"
+        }
+      }
+    },
+    "73eabe3a704a00616cc2e29f241229719fd66609cd02b30da360ac32c41fd58f": {
+      "source": {
+        "path": "TaxDeadlineUsageStack-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "809555764832-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+          "objectKey": "73eabe3a704a00616cc2e29f241229719fd66609cd02b30da360ac32c41fd58f.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-file-publishing-role-809555764832-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,2374 @@
+{
+ "Description": "Tax Deadline API - REST API",
+ "Resources": {
+  "AuthorizerFunctionServiceRole5B2A061B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/AuthorizerFunction/ServiceRole/Resource"
+   }
+  },
+  "AuthorizerFunctionServiceRoleDefaultPolicy2C75A4EA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AuthorizerFunctionServiceRoleDefaultPolicy2C75A4EA",
+    "Roles": [
+     {
+      "Ref": "AuthorizerFunctionServiceRole5B2A061B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/AuthorizerFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "AuthorizerFunctionB4DBAA43": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "0b99d461a8188f531078ba243e5f3c1be9dfd4e65c6a940ae77d2c9abbd02e1a.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "API_KEYS_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputRefApiKeysTable9F4DC7E79648F444"
+      },
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-authorizer-dev",
+    "Handler": "index.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AuthorizerFunctionServiceRole5B2A061B",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 5
+   },
+   "DependsOn": [
+    "AuthorizerFunctionServiceRoleDefaultPolicy2C75A4EA",
+    "AuthorizerFunctionServiceRole5B2A061B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/AuthorizerFunction/Resource",
+    "aws:asset:path": "asset.0b99d461a8188f531078ba243e5f3c1be9dfd4e65c6a940ae77d2c9abbd02e1a",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AuthorizerFunctionTaxDeadlineApiStackdevApiAuthorizerA5858393Permissions4FB6D8FB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AuthorizerFunctionB4DBAA43",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/authorizers/",
+       {
+        "Ref": "ApiAuthorizer68095F41"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/AuthorizerFunction/TaxDeadlineApiStackdevApiAuthorizerA5858393:Permissions"
+   }
+  },
+  "ApiAuthorizer68095F41": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "AuthorizerResultTtlInSeconds": 300,
+    "AuthorizerUri": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           ":",
+           {
+            "Fn::GetAtt": [
+             "AuthorizerFunctionB4DBAA43",
+             "Arn"
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       ":apigateway:",
+       {
+        "Fn::Select": [
+         3,
+         {
+          "Fn::Split": [
+           ":",
+           {
+            "Fn::GetAtt": [
+             "AuthorizerFunctionB4DBAA43",
+             "Arn"
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       ":lambda:path/2015-03-31/functions/",
+       {
+        "Fn::GetAtt": [
+         "AuthorizerFunctionB4DBAA43",
+         "Arn"
+        ]
+       },
+       "/invocations"
+      ]
+     ]
+    },
+    "IdentitySource": "method.request.header.X-API-Key",
+    "Name": "TaxDeadlineAuthorizer-dev",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    },
+    "Type": "REQUEST"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/ApiAuthorizer/Resource"
+   }
+  },
+  "ApiAccessLogsE9DF007D": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 30,
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/ApiAccessLogs/Resource"
+   }
+  },
+  "TaxDeadlineApiFB394769": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Tax Deadline API - Security-first architecture",
+    "Name": "tax-deadline-api-dev",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Resource"
+   }
+  },
+  "TaxDeadlineApiDeployment355ECEF7263ffd2933a9ef1564d7b0ec2ff776a8": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Tax Deadline API - Security-first architecture",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "DependsOn": [
+    "TaxDeadlineApiOPTIONS6996F755",
+    "TaxDeadlineApiv1adminkeysOPTIONS2D3BB542",
+    "TaxDeadlineApiv1adminkeysPOSTFD01EDAA",
+    "TaxDeadlineApiv1adminkeys20704C4D",
+    "TaxDeadlineApiv1adminOPTIONS1C3E0F5D",
+    "TaxDeadlineApiv1adminD21F91C7",
+    "TaxDeadlineApiv1deadlinescalculateOPTIONS6AC464DF",
+    "TaxDeadlineApiv1deadlinescalculatePOSTBAB532E2",
+    "TaxDeadlineApiv1deadlinescalculate6B83695B",
+    "TaxDeadlineApiv1deadlinesGET6A5C4E81",
+    "TaxDeadlineApiv1deadlinesOPTIONS3F7AC20F",
+    "TaxDeadlineApiv1deadlines0F6CB2FC",
+    "TaxDeadlineApiv1deadlinessearchGET96A2FC65",
+    "TaxDeadlineApiv1deadlinessearchOPTIONS25DCD6CC",
+    "TaxDeadlineApiv1deadlinessearchABF64CB8",
+    "TaxDeadlineApiv1healthGET4BB66751",
+    "TaxDeadlineApiv1healthOPTIONS1CACAADF",
+    "TaxDeadlineApiv1health5DE6E1CC",
+    "TaxDeadlineApiv1OPTIONSDBB8914A",
+    "TaxDeadlineApiv11C1150C4",
+    "TaxDeadlineApiv1usageGET7FB85F32",
+    "TaxDeadlineApiv1usageOPTIONSAB5A44FE",
+    "TaxDeadlineApiv1usage11F06B43"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Deployment/Resource"
+   }
+  },
+  "TaxDeadlineApiDeploymentStagedevDD4334EC": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "AccessLogSetting": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "ApiAccessLogsE9DF007D",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+    },
+    "DeploymentId": {
+     "Ref": "TaxDeadlineApiDeployment355ECEF7263ffd2933a9ef1564d7b0ec2ff776a8"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "LoggingLevel": "ERROR",
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 5000,
+      "ThrottlingRateLimit": 2500
+     }
+    ],
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    },
+    "StageName": "dev",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "TracingEnabled": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/DeploymentStage.dev/Resource"
+   }
+  },
+  "TaxDeadlineApiOPTIONS6996F755": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "TaxDeadlineApiFB394769",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv11C1150C4": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TaxDeadlineApiFB394769",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "v1",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/Resource"
+   }
+  },
+  "TaxDeadlineApiv1OPTIONSDBB8914A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv11C1150C4"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1health5DE6E1CC": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv11C1150C4"
+    },
+    "PathPart": "health",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/Resource"
+   }
+  },
+  "TaxDeadlineApiv1healthOPTIONS1CACAADF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1health5DE6E1CC"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1healthGET4BB66751": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseTemplates": {
+        "application/json": "{\"status\":\"healthy\",\"region\":\"ap-south-1\",\"stage\":\"dev\",\"timestamp\":\"$context.requestTime\",\"version\":\"1.0.0\"}"
+       },
+       "StatusCode": "200"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{\"statusCode\": 200}"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1health5DE6E1CC"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/GET/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlines0F6CB2FC": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv11C1150C4"
+    },
+    "PathPart": "deadlines",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinesOPTIONS3F7AC20F": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlines0F6CB2FC"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinesGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlines56FDFBF5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetDeadlinesFunctionE7D41D3C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/",
+       {
+        "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+       },
+       "/GET/v1/deadlines"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines"
+   }
+  },
+  "TaxDeadlineApiv1deadlinesGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlines9C1DDB42": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetDeadlinesFunctionE7D41D3C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/test-invoke-stage/GET/v1/deadlines"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines"
+   }
+  },
+  "TaxDeadlineApiv1deadlinesGET6A5C4E81": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "CUSTOM",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetDeadlinesFunctionE7D41D3C",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestParameters": {
+     "method.request.querystring.country": false,
+     "method.request.querystring.state": false,
+     "method.request.querystring.year": false,
+     "method.request.querystring.type": false,
+     "method.request.querystring.upcoming": false
+    },
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlines0F6CB2FC"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinessearchABF64CB8": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv1deadlines0F6CB2FC"
+    },
+    "PathPart": "search",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinessearchOPTIONS25DCD6CC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlinessearchABF64CB8"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinessearchGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlinessearchF237D14E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SearchDeadlinesFunction400E65AC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/",
+       {
+        "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+       },
+       "/GET/v1/deadlines/search"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines.search"
+   }
+  },
+  "TaxDeadlineApiv1deadlinessearchGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlinessearch1169FCFB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SearchDeadlinesFunction400E65AC",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/test-invoke-stage/GET/v1/deadlines/search"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines.search"
+   }
+  },
+  "TaxDeadlineApiv1deadlinessearchGET96A2FC65": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "CUSTOM",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "SearchDeadlinesFunction400E65AC",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestParameters": {
+     "method.request.querystring.q": true,
+     "method.request.querystring.from": false,
+     "method.request.querystring.to": false
+    },
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlinessearchABF64CB8"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinescalculate6B83695B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv1deadlines0F6CB2FC"
+    },
+    "PathPart": "calculate",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinescalculateOPTIONS6AC464DF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlinescalculate6B83695B"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1deadlinescalculatePOSTApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1deadlinescalculate493FE371": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CalculateDeadlinesFunction6BDBA45B",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/",
+       {
+        "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+       },
+       "/POST/v1/deadlines/calculate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.deadlines.calculate"
+   }
+  },
+  "TaxDeadlineApiv1deadlinescalculatePOSTApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1deadlinescalculate63E85CFE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CalculateDeadlinesFunction6BDBA45B",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/test-invoke-stage/POST/v1/deadlines/calculate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.deadlines.calculate"
+   }
+  },
+  "TaxDeadlineApiv1deadlinescalculatePOSTBAB532E2": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "CUSTOM",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "CalculateDeadlinesFunction6BDBA45B",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1deadlinescalculate6B83695B"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/Resource"
+   }
+  },
+  "TaxDeadlineApiv1usage11F06B43": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv11C1150C4"
+    },
+    "PathPart": "usage",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/Resource"
+   }
+  },
+  "TaxDeadlineApiv1usageOPTIONSAB5A44FE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1usage11F06B43"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1usageGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1usage855EA132": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetUsageFunction6F9419E6",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/",
+       {
+        "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+       },
+       "/GET/v1/usage"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.usage"
+   }
+  },
+  "TaxDeadlineApiv1usageGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1usage5A95A810": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetUsageFunction6F9419E6",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/test-invoke-stage/GET/v1/usage"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.usage"
+   }
+  },
+  "TaxDeadlineApiv1usageGET7FB85F32": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "CUSTOM",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetUsageFunction6F9419E6",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestParameters": {
+     "method.request.querystring.period": false,
+     "method.request.querystring.detailed": false
+    },
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1usage11F06B43"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/Resource"
+   }
+  },
+  "TaxDeadlineApiv1adminD21F91C7": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv11C1150C4"
+    },
+    "PathPart": "admin",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/Resource"
+   }
+  },
+  "TaxDeadlineApiv1adminOPTIONS1C3E0F5D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1adminD21F91C7"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1adminkeys20704C4D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TaxDeadlineApiv1adminD21F91C7"
+    },
+    "PathPart": "keys",
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/Resource"
+   }
+  },
+  "TaxDeadlineApiv1adminkeysOPTIONS2D3BB542": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-API-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1adminkeys20704C4D"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/OPTIONS/Resource"
+   }
+  },
+  "TaxDeadlineApiv1adminkeysPOSTApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1adminkeys9C8D17A5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "KeyGeneratorFunction96DA7963",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/",
+       {
+        "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+       },
+       "/POST/v1/admin/keys"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.admin.keys"
+   }
+  },
+  "TaxDeadlineApiv1adminkeysPOSTApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1adminkeys95816E7A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "KeyGeneratorFunction96DA7963",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-south-1:809555764832:",
+       {
+        "Ref": "TaxDeadlineApiFB394769"
+       },
+       "/test-invoke-stage/POST/v1/admin/keys"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.admin.keys"
+   }
+  },
+  "TaxDeadlineApiv1adminkeysPOSTFD01EDAA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "KeyGeneratorFunction96DA7963",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TaxDeadlineApiv1adminkeys20704C4D"
+    },
+    "RestApiId": {
+     "Ref": "TaxDeadlineApiFB394769"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/Resource"
+   }
+  },
+  "GetDeadlinesFunctionServiceRole54A6751B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetDeadlinesFunction/ServiceRole/Resource"
+   }
+  },
+  "GetDeadlinesFunctionServiceRoleDefaultPolicy80E44BEC": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "kinesis:ListShards",
+        "kinesis:PutRecord",
+        "kinesis:PutRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "TaxDeadlineUsageStack-dev:ExportsOutputFnGetAttUsageStream4473DE36Arn88721E39"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetDeadlinesFunctionServiceRoleDefaultPolicy80E44BEC",
+    "Roles": [
+     {
+      "Ref": "GetDeadlinesFunctionServiceRole54A6751B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetDeadlinesFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetDeadlinesFunctionE7D41D3C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "9d8d26eda7d5b3256dc9ebd4093344d07fb4108a360ec9dddebe38732a176c91.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DEADLINES_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputRefDeadlinesTable68314219B44DFEDC"
+      },
+      "USAGE_STREAM": {
+       "Fn::ImportValue": "TaxDeadlineUsageStack-dev:ExportsOutputRefUsageStream4473DE36E45BFA3C"
+      },
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-get-dev",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetDeadlinesFunctionServiceRole54A6751B",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetDeadlinesFunctionServiceRoleDefaultPolicy80E44BEC",
+    "GetDeadlinesFunctionServiceRole54A6751B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetDeadlinesFunction/Resource",
+    "aws:asset:path": "asset.9d8d26eda7d5b3256dc9ebd4093344d07fb4108a360ec9dddebe38732a176c91",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SearchDeadlinesFunctionServiceRoleCC2F1AEA": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/SearchDeadlinesFunction/ServiceRole/Resource"
+   }
+  },
+  "SearchDeadlinesFunctionServiceRoleDefaultPolicy385E014B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SearchDeadlinesFunctionServiceRoleDefaultPolicy385E014B",
+    "Roles": [
+     {
+      "Ref": "SearchDeadlinesFunctionServiceRoleCC2F1AEA"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/SearchDeadlinesFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SearchDeadlinesFunction400E65AC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "8c36b3a3fc3bf970e3f22998c4a506af8015d6e2a0ccd3f3557074ad05cbe6f2.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DEADLINES_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputRefDeadlinesTable68314219B44DFEDC"
+      },
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-search-dev",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "SearchDeadlinesFunctionServiceRoleCC2F1AEA",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "SearchDeadlinesFunctionServiceRoleDefaultPolicy385E014B",
+    "SearchDeadlinesFunctionServiceRoleCC2F1AEA"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/SearchDeadlinesFunction/Resource",
+    "aws:asset:path": "asset.8c36b3a3fc3bf970e3f22998c4a506af8015d6e2a0ccd3f3557074ad05cbe6f2",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CalculateDeadlinesFunctionServiceRole50993A29": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/ServiceRole/Resource"
+   }
+  },
+  "CalculateDeadlinesFunctionServiceRoleDefaultPolicy83DD5346": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CalculateDeadlinesFunctionServiceRoleDefaultPolicy83DD5346",
+    "Roles": [
+     {
+      "Ref": "CalculateDeadlinesFunctionServiceRole50993A29"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CalculateDeadlinesFunction6BDBA45B": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "d354c136f0d24619de52248ae7e9c7f58078f492730a144457cda025898a26db.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DEADLINES_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputRefDeadlinesTable68314219B44DFEDC"
+      },
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-calculate-dev",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "CalculateDeadlinesFunctionServiceRole50993A29",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 15
+   },
+   "DependsOn": [
+    "CalculateDeadlinesFunctionServiceRoleDefaultPolicy83DD5346",
+    "CalculateDeadlinesFunctionServiceRole50993A29"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/Resource",
+    "aws:asset:path": "asset.d354c136f0d24619de52248ae7e9c7f58078f492730a144457cda025898a26db",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetUsageFunctionServiceRole6B1A936E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetUsageFunction/ServiceRole/Resource"
+   }
+  },
+  "GetUsageFunctionServiceRoleDefaultPolicy33237616": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineUsageStack-dev:ExportsOutputFnGetAttUsageTable28300137Arn3C045811"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetUsageFunctionServiceRoleDefaultPolicy33237616",
+    "Roles": [
+     {
+      "Ref": "GetUsageFunctionServiceRole6B1A936E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetUsageFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetUsageFunction6F9419E6": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "7f03b4918cfb31d211e8a2e3a27a779db07737a24ea6eddd22fa4d43ed09c7f4.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "USAGE_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineUsageStack-dev:ExportsOutputRefUsageTable283001378B053968"
+      },
+      "REDIS_ENDPOINT": "localhost",
+      "REDIS_PORT": "6379",
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-get-usage-dev",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetUsageFunctionServiceRole6B1A936E",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "GetUsageFunctionServiceRoleDefaultPolicy33237616",
+    "GetUsageFunctionServiceRole6B1A936E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/GetUsageFunction/Resource",
+    "aws:asset:path": "asset.7f03b4918cfb31d211e8a2e3a27a779db07737a24ea6eddd22fa4d43ed09c7f4",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "KeyGeneratorFunctionServiceRole737FC099": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/KeyGeneratorFunction/ServiceRole/Resource"
+   }
+  },
+  "KeyGeneratorFunctionServiceRoleDefaultPolicy9B08B17C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "KeyGeneratorFunctionServiceRoleDefaultPolicy9B08B17C",
+    "Roles": [
+     {
+      "Ref": "KeyGeneratorFunctionServiceRole737FC099"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/KeyGeneratorFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "KeyGeneratorFunction96DA7963": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+     "S3Key": "a51a9821da228d79d7fb74e18f301a1637d044f6ba3972ff1f57b5ea6c258395.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "API_KEYS_TABLE": {
+       "Fn::ImportValue": "TaxDeadlineDataStack-dev:ExportsOutputRefApiKeysTable9F4DC7E79648F444"
+      },
+      "STAGE": "dev",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "FunctionName": "tax-deadline-key-generator-dev",
+    "Handler": "index.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "KeyGeneratorFunctionServiceRole737FC099",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Tags": [
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "TaxDeadlineAPI"
+     },
+     {
+      "Key": "Region",
+      "Value": "ap-south-1"
+     },
+     {
+      "Key": "Stage",
+      "Value": "dev"
+     }
+    ],
+    "Timeout": 10
+   },
+   "DependsOn": [
+    "KeyGeneratorFunctionServiceRoleDefaultPolicy9B08B17C",
+    "KeyGeneratorFunctionServiceRole737FC099"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/KeyGeneratorFunction/Resource",
+    "aws:asset:path": "asset.a51a9821da228d79d7fb74e18f301a1637d044f6ba3972ff1f57b5ea6c258395",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQy3KDMAz8ltyNSsKpxySd5tLXkA/IOKAQ8bApkstQhn/v2JA2Pe2uV1qvvYF1HEO80j1HWV5FNZ1hPIrOKqV7Po21bs65PhmbY8nwFuDZmUzIGkW6gTG1Nar9xQT8sDVlg5czmxQnJ82MwrD1oDiBncsqlJ1mVHM8jPuL+U31y9g1xEzWTEq3VGjBXg8wpvjpkGXr5Go7+sbOD9+p1JsthToLfcK2tkODRvzpnTqKLkLxmaTI1nUZhlqvKFebe3NhN3dJDnxStS0YxhdbHDrrWu/d+DT9rYR3+0vIFH7m3Unr5H+S/18o+eFrE8P6EZJVyURR54xQg5DO+ANNm6cTrAEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "TaxDeadlineApiStack-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "TaxDeadlineApiEndpointCB6493DE": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TaxDeadlineApiFB394769"
+      },
+      ".execute-api.ap-south-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "Tax Deadline API URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TaxDeadlineApiFB394769"
+      },
+      ".execute-api.ap-south-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+      },
+      "/"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "dev-ApiUrl"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

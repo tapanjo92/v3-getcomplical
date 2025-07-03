@@ -1,0 +1,855 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "TaxDeadlineDataStack-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "TaxDeadlineDataStack-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "TaxDeadlineDataStack-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://809555764832/ap-south-1",
+      "properties": {
+        "templateFile": "TaxDeadlineDataStack-dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "ManagedBy": "CDK",
+          "Project": "TaxDeadlineAPI",
+          "Region": "ap-south-1",
+          "Stage": "dev"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-deploy-role-809555764832-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-cfn-exec-role-809555764832-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-809555764832-ap-south-1/8404dc911b2b57119984b46a8b8a9fcf3a42d151d4cee4ed157e8afd1036a3eb.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "TaxDeadlineDataStack-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-lookup-role-809555764832-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "TaxDeadlineDataStack-dev.assets"
+      ],
+      "metadata": {
+        "/TaxDeadlineDataStack-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "TaxDeadlineAPI"
+              },
+              {
+                "Key": "Region",
+                "Value": "ap-south-1"
+              },
+              {
+                "Key": "Stage",
+                "Value": "dev"
+              }
+            ]
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/DeadlinesTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DeadlinesTable68314219"
+            }
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/DeadlinesTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeadlinesTable68314219"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/ApiKeysTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ApiKeysTable9F4DC7E7"
+            }
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/ApiKeysTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiKeysTable9F4DC7E7"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/DeadlinesTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeadlinesTableName"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/ApiKeysTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiKeysTableName"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/Exports/Output{\"Fn::GetAtt\":[\"ApiKeysTable9F4DC7E7\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttApiKeysTable9F4DC7E7ArnE84F3BB0"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/Exports/Output{\"Ref\":\"ApiKeysTable9F4DC7E7\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefApiKeysTable9F4DC7E79648F444"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/Exports/Output{\"Fn::GetAtt\":[\"DeadlinesTable68314219\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttDeadlinesTable68314219ArnDA228387"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/Exports/Output{\"Ref\":\"DeadlinesTable68314219\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefDeadlinesTable68314219B44DFEDC"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/TaxDeadlineDataStack-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "TaxDeadlineDataStack-dev"
+    },
+    "TaxDeadlineMonitoringStack-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "TaxDeadlineMonitoringStack-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "TaxDeadlineMonitoringStack-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://809555764832/ap-south-1",
+      "properties": {
+        "templateFile": "TaxDeadlineMonitoringStack-dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "ManagedBy": "CDK",
+          "Project": "TaxDeadlineAPI",
+          "Region": "ap-south-1",
+          "Stage": "dev"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-deploy-role-809555764832-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-cfn-exec-role-809555764832-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-809555764832-ap-south-1/737eec72fb96ec37abe2f91129a600e5978f5d7ed4834e309cdbbdc92fec7e9e.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "TaxDeadlineMonitoringStack-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-lookup-role-809555764832-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "TaxDeadlineMonitoringStack-dev.assets"
+      ],
+      "metadata": {
+        "/TaxDeadlineMonitoringStack-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "TaxDeadlineAPI"
+              },
+              {
+                "Key": "Region",
+                "Value": "ap-south-1"
+              },
+              {
+                "Key": "Stage",
+                "Value": "dev"
+              }
+            ]
+          }
+        ],
+        "/TaxDeadlineMonitoringStack-dev/AlarmTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlarmTopicD01E77F9"
+          }
+        ],
+        "/TaxDeadlineMonitoringStack-dev/AlarmTopicArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlarmTopicArn"
+          }
+        ],
+        "/TaxDeadlineMonitoringStack-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/TaxDeadlineMonitoringStack-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/TaxDeadlineMonitoringStack-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "TaxDeadlineMonitoringStack-dev"
+    },
+    "TaxDeadlineUsageStack-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "TaxDeadlineUsageStack-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "TaxDeadlineUsageStack-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://809555764832/ap-south-1",
+      "properties": {
+        "templateFile": "TaxDeadlineUsageStack-dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "ManagedBy": "CDK",
+          "Project": "TaxDeadlineAPI",
+          "Region": "ap-south-1",
+          "Stage": "dev"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-deploy-role-809555764832-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-cfn-exec-role-809555764832-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-809555764832-ap-south-1/73eabe3a704a00616cc2e29f241229719fd66609cd02b30da360ac32c41fd58f.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "TaxDeadlineUsageStack-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-lookup-role-809555764832-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "TaxDeadlineUsageStack-dev.assets"
+      ],
+      "metadata": {
+        "/TaxDeadlineUsageStack-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "TaxDeadlineAPI"
+              },
+              {
+                "Key": "Region",
+                "Value": "ap-south-1"
+              },
+              {
+                "Key": "Stage",
+                "Value": "dev"
+              }
+            ]
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageStream/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageStream4473DE36"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "UsageTable28300137"
+            }
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageTable28300137"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageProcessor/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageProcessorServiceRole942DE49A"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageProcessor/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageProcessorServiceRoleDefaultPolicy1B585553"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageProcessor/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageProcessor2202664B"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageProcessor/KinesisEventSource:TaxDeadlineUsageStackdevUsageStreamFA71F74B/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageProcessorKinesisEventSourceTaxDeadlineUsageStackdevUsageStreamFA71F74B40E943E5"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageStreamName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageStreamName"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/UsageTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UsageTableName"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/Exports/Output{\"Fn::GetAtt\":[\"UsageStream4473DE36\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttUsageStream4473DE36Arn88721E39"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/Exports/Output{\"Ref\":\"UsageStream4473DE36\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefUsageStream4473DE36E45BFA3C"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/Exports/Output{\"Fn::GetAtt\":[\"UsageTable28300137\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttUsageTable28300137Arn3C045811"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/Exports/Output{\"Ref\":\"UsageTable28300137\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefUsageTable283001378B053968"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/TaxDeadlineUsageStack-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "TaxDeadlineUsageStack-dev"
+    },
+    "TaxDeadlineApiStack-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "TaxDeadlineApiStack-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "TaxDeadlineApiStack-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://809555764832/ap-south-1",
+      "properties": {
+        "templateFile": "TaxDeadlineApiStack-dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "ManagedBy": "CDK",
+          "Project": "TaxDeadlineAPI",
+          "Region": "ap-south-1",
+          "Stage": "dev"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-deploy-role-809555764832-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-cfn-exec-role-809555764832-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-809555764832-ap-south-1/e66f6001747d05101ce15791e5ef6c74a5aca8f6653573321a8da85babd89378.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "TaxDeadlineApiStack-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-lookup-role-809555764832-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "TaxDeadlineDataStack-dev",
+        "TaxDeadlineUsageStack-dev",
+        "TaxDeadlineApiStack-dev.assets"
+      ],
+      "metadata": {
+        "/TaxDeadlineApiStack-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "TaxDeadlineAPI"
+              },
+              {
+                "Key": "Region",
+                "Value": "ap-south-1"
+              },
+              {
+                "Key": "Stage",
+                "Value": "dev"
+              }
+            ]
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/AuthorizerFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthorizerFunctionServiceRole5B2A061B"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/AuthorizerFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthorizerFunctionServiceRoleDefaultPolicy2C75A4EA"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/AuthorizerFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthorizerFunctionB4DBAA43"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/AuthorizerFunction/TaxDeadlineApiStackdevApiAuthorizerA5858393:Permissions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuthorizerFunctionTaxDeadlineApiStackdevApiAuthorizerA5858393Permissions4FB6D8FB"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/ApiAuthorizer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiAuthorizer68095F41"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/ApiAccessLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiAccessLogsE9DF007D"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiFB394769"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiDeployment355ECEF7263ffd2933a9ef1564d7b0ec2ff776a8"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/DeploymentStage.dev/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiDeploymentStagedevDD4334EC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiEndpointCB6493DE"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiOPTIONS6996F755"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv11C1150C4"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1OPTIONSDBB8914A"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1health5DE6E1CC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1healthOPTIONS1CACAADF"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/health/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1healthGET4BB66751"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlines0F6CB2FC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinesOPTIONS3F7AC20F"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinesGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlines56FDFBF5"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinesGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlines9C1DDB42"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinesGET6A5C4E81"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinessearchABF64CB8"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinessearchOPTIONS25DCD6CC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines.search": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinessearchGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlinessearchF237D14E"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.deadlines.search": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinessearchGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1deadlinessearch1169FCFB"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/search/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinessearchGET96A2FC65"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinescalculate6B83695B"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinescalculateOPTIONS6AC464DF"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.deadlines.calculate": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinescalculatePOSTApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1deadlinescalculate493FE371"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.deadlines.calculate": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinescalculatePOSTApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1deadlinescalculate63E85CFE"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/deadlines/calculate/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1deadlinescalculatePOSTBAB532E2"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1usage11F06B43"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1usageOPTIONSAB5A44FE"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.usage": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1usageGETApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1usage855EA132"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.GET..v1.usage": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1usageGETApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EGETv1usage5A95A810"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/usage/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1usageGET7FB85F32"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminD21F91C7"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminOPTIONS1C3E0F5D"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminkeys20704C4D"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminkeysOPTIONS2D3BB542"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/ApiPermission.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.admin.keys": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminkeysPOSTApiPermissionTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1adminkeys9C8D17A5"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/ApiPermission.Test.TaxDeadlineApiStackdevTaxDeadlineApi8E1B872E.POST..v1.admin.keys": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminkeysPOSTApiPermissionTestTaxDeadlineApiStackdevTaxDeadlineApi8E1B872EPOSTv1adminkeys95816E7A"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/TaxDeadlineApi/Default/v1/admin/keys/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TaxDeadlineApiv1adminkeysPOSTFD01EDAA"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetDeadlinesFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetDeadlinesFunctionServiceRole54A6751B"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetDeadlinesFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetDeadlinesFunctionServiceRoleDefaultPolicy80E44BEC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetDeadlinesFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetDeadlinesFunctionE7D41D3C"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/SearchDeadlinesFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SearchDeadlinesFunctionServiceRoleCC2F1AEA"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/SearchDeadlinesFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SearchDeadlinesFunctionServiceRoleDefaultPolicy385E014B"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/SearchDeadlinesFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SearchDeadlinesFunction400E65AC"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CalculateDeadlinesFunctionServiceRole50993A29"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CalculateDeadlinesFunctionServiceRoleDefaultPolicy83DD5346"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/CalculateDeadlinesFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CalculateDeadlinesFunction6BDBA45B"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetUsageFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetUsageFunctionServiceRole6B1A936E"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetUsageFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetUsageFunctionServiceRoleDefaultPolicy33237616"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/GetUsageFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetUsageFunction6F9419E6"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/KeyGeneratorFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "KeyGeneratorFunctionServiceRole737FC099"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/KeyGeneratorFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "KeyGeneratorFunctionServiceRoleDefaultPolicy9B08B17C"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/KeyGeneratorFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "KeyGeneratorFunction96DA7963"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/TaxDeadlineApiStack-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "TaxDeadlineApiStack-dev"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

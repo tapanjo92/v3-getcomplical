@@ -1,0 +1,20 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "737eec72fb96ec37abe2f91129a600e5978f5d7ed4834e309cdbbdc92fec7e9e": {
+      "source": {
+        "path": "TaxDeadlineMonitoringStack-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "809555764832-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+          "objectKey": "737eec72fb96ec37abe2f91129a600e5978f5d7ed4834e309cdbbdc92fec7e9e.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-file-publishing-role-809555764832-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

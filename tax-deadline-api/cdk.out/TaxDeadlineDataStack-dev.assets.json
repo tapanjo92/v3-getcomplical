@@ -1,0 +1,20 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "8404dc911b2b57119984b46a8b8a9fcf3a42d151d4cee4ed157e8afd1036a3eb": {
+      "source": {
+        "path": "TaxDeadlineDataStack-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "809555764832-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-809555764832-ap-south-1",
+          "objectKey": "8404dc911b2b57119984b46a8b8a9fcf3a42d151d4cee4ed157e8afd1036a3eb.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::809555764832:role/cdk-hnb659fds-file-publishing-role-809555764832-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
