@@ -15,7 +15,10 @@
     "deploy:usage": "cdk deploy TaxDeadlineUsageStack",
     "synth": "cdk synth",
     "diff": "cdk diff",
-    "destroy": "cdk destroy --all"
+    "destroy": "cdk destroy --all",
+    "seed:data": "ts-node scripts/seed-data.ts",
+    "seed:comprehensive": "ts-node scripts/seed-comprehensive-data.ts",
+    "validate:data": "ts-node scripts/validate-data.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",
